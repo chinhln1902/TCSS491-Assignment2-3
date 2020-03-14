@@ -27,17 +27,22 @@ function Ball(x, y, xVelocity, yVelocity, radius, color) {
 
 	this.update = function() {
         //balls hit top or bottom
-        if (this.y - this.radius > canvas.height || this.y - this.radius < 0 || this.y - this.radius < windY) {
-            this.yVelocity = -this.yVelocity + windY / 25;
+        debugger;
+        if (this.y + this.radius > canvas.height || this.y - this.radius < 0) {
+            this.yVelocity = -this.yVelocity;
+            // this.yVelocity = -this.yVelocity + windY / 25;
         } 
         else {
-            this.yVelocity = this.yVelocity - windY / 25;
+            this.yVelocity = -windY / 25;
+            // this.yVelocity = this.yVelocity - windY / 25;
         }
         //balls hit left or right
-        if (this.x + this.radius > canvas.width || this.x + this.radius < 0) {
-            this.xVelocity = -this.xVelocity + windX / 25;
+        if (this.x + this.radius > canvas.width || this.x - this.radius < 0) {
+            this.xVelocity = -this.xVelocity;
+            // this.xVelocity = -this.xVelocity + windX / 25;
         } else {
-            this.xVelocity = this.xVelocity - windX / 25;
+            this.xVelocity = -windX / 25;
+            // this.xVelocity = this.xVelocity - windX / 25;
         }
         this.x = this.x + this.xVelocity;
         this.y = this.y + this.yVelocity;
@@ -86,8 +91,11 @@ window.onload = function () {
     var socket = io.connect("http://24.16.255.56:8888");
   
     socket.on("load", function (data) {
+        debugger;
         ball.x = data.data.x;
         ball.y = data.data.y;
+        ball.yVelocity = data.data.yVelocity;
+        ball.xVelocity = data.data.xVelocity;
         animate();
         console.log(data);
     });
@@ -99,7 +107,7 @@ window.onload = function () {
     saveButton.onclick = function () {
       console.log("save");
       text.innerHTML = "Saved."
-      socket.emit("save", { studentname: "Chinh Le", statename: "Ball's Postision", data: {x: ball.x, y: ball.y} });
+      socket.emit("save", { studentname: "Chinh Le", statename: "Ball's Postision", data: ball });
     };
   
     loadButton.onclick = function () {
